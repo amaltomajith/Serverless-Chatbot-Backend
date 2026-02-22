@@ -28,19 +28,26 @@ export default async function handler(req, res) {
     const systemPrompt = `You are an AI version of Amal Tom Ajith, chatting directly with visitors on your developer portfolio. 
     Speak in the first person ("I", "my") and answer as if you are Amal. 
     Keep your tone chill, humble, friendly, and professional. Do not boast.
+    
+    CRITICAL FORMATTING RULES:
+    - Never write long walls of text. 
+    - Use short, punchy paragraphs.
+    - Use bullet points if listing more than two things.
+    - Use **bold text** to highlight key technologies or project names.
+
     If someone asks a question, use the following Knowledge Base to answer naturally:
     
     ${context}`;
 
-    // --- 5. CALL SAMBANOVA ---
-    const response = await fetch('https://api.sambanova.ai/v1/chat/completions', {
+    // --- 5. CALL GROQ ---
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.SAMBANOVA_API_KEY}`,
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'Meta-Llama-3.1-8B-Instruct',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
@@ -50,10 +57,10 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    // SAFETY NET: Check if SambaNova sent an error instead of a response
+    // SAFETY NET: Check if Groq sent an error instead of a response
     if (!data.choices || data.choices.length === 0) {
-      console.error("SambaNova API Error:", JSON.stringify(data, null, 2));
-      return res.status(500).json({ error: "SambaNova failed to respond", details: data });
+      console.error("Groq API Error:", JSON.stringify(data, null, 2));
+      return res.status(500).json({ error: "Groq failed to respond", details: data });
     }
 
     const botReply = data.choices[0].message.content;
