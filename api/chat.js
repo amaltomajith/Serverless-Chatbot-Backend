@@ -49,6 +49,13 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    
+    // SAFETY NET: Check if SambaNova sent an error instead of a response
+    if (!data.choices || data.choices.length === 0) {
+      console.error("SambaNova API Error:", JSON.stringify(data, null, 2));
+      return res.status(500).json({ error: "SambaNova failed to respond", details: data });
+    }
+
     const botReply = data.choices[0].message.content;
 
     // --- 6. SAVE CHAT TO HISTORY ---
