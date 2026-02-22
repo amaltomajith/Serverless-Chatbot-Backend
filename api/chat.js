@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const kbText = kbEntries.map(entry => entry.content).join('\n');
 
     // 3. Construct the System Prompt with injected context
-    const systemPrompt = `You are the AI assistant for Binsu's developer portfolio. You answer questions about his B.Tech IT studies at Christ University and projects like StoryWeaver, Magnovite, and VoiceSQL. 
+    const systemPrompt = `You are the AI assistant for Amal's developer portfolio. You answer questions about his B.Tech IT studies at Christ University and projects like StoryWeaver, Magnovite, and VoiceSQL. 
     
     Answer strictly based on the following knowledge base:
     ${kbText}
